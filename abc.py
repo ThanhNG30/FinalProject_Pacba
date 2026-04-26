@@ -17,14 +17,23 @@ else:
 # Initialize Roomba.    
 ser.write(bytearray([128, 132]))  # full mode (since pick up Roomba to end)
 time.sleep(1)
-def turn_left():
-    ser.write(bytearray([137, 0 , 185, 0, 1]))#ccw
-    time.sleep(1) 
-    stop()
+# 
+drive_straight = ser.write(bytearray([137, 0, 0, 0, 0]))
+turn_left = ser.write(bytearray([137, 0 , 185, 0, 1]))#ccw
+turn_right = ser.write(bytearray([137, 0, 185, 255, 255]))#cw
+stop = ser.write(bytearray([137, 0, 0, 0, 0]))
+left_k_pressed = False
+right_k_pressed = False
 
-def turn_right():
-    ser.write(bytearray([137, 0, 185, 255, 255]))#cw
-    time.sleep(1)
-    stop()
-
+# Keep a counter to help control timing
+time = 0
+spinning_time = ??
+while True:
+    if time ?? spinning_time
+        #stop
+    if time ?? spinning_time
+        #spinning
+    if left_k_pressed:
+        spinning_time = 
+    time += 1
 ser.close()
