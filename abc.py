@@ -3,6 +3,8 @@ import time     # for sleep() and time()
 import sys      # for exit()
 import pygame
 import math
+from pynput import keyboard #
+
 
 # Configure serial communication.
 #Set for Create 2 baud rate.
@@ -34,6 +36,8 @@ while True:
     if time ?? spinning_time
         #spinning
     if left_k_pressed:
+        spinning_time = 
+    if right_k_presses:
         spinning_time = 
     time += 1
 ser.close()
