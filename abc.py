@@ -3,7 +3,7 @@ import time     # for sleep() and time()
 import sys      # for exit()
 import pygame
 import math
-from pynput import keyboard #
+
 
 
 # Configure serial communication.
@@ -31,13 +31,17 @@ right_k_pressed = False
 time = 0
 spinning_time = ??
 while True:
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                left_k_pressed = True
+                spinning_time = 
+            elif event.key == pygame.K_RIGHT:
+                right_k_pressed = True
+                spinning_time = 
     if time ?? spinning_time
         #stop
     if time ?? spinning_time
         #spinning
-    if left_k_pressed:
-        spinning_time = 
-    if right_k_presses:
-        spinning_time = 
     time += 1
 ser.close()
