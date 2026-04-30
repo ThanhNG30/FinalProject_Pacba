@@ -26,34 +26,31 @@ left_k_pressed = False
 right_k_pressed = False
 #for keyboard
 pygame.init()
+
 # Keep a counter to help control timing
 time = 0
-spinning_time = 0
-stop_spinning_time = 0
+spinning_time = 2
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:            
             if event.key == pygame.K_LEFT:
                 left_k_pressed = True
-                spinning_time = time +1  
             elif event.key == pygame.K_RIGHT:
                 right_k_pressed = True
-                spinning_time = time +1
             elif event.key == pygame.K_UP:
                 ser.write(drive_forward)
-        if time < spinning_time:
-            while left_k_pressed == True:
+        if stop_time > time:
+            while left_k_pressed = True:
                 ser.write(turn_left)
-                if spinning_time == stop_spinning_time:
-                    ser.write(stop)
-                    spinning_time = 0
-                spinning_time +=1
-            while right_k_pressed == True:
-                ser.write(turn_right) 
-                if spinning_time == stop_spinning_time:
-                    ser.write(stop)
-                    spinning_time = 0
-                spinning_time +=1
+                time +=1
+            while right_k_pressed = True:
+                ser.write(turn_right)
+                time +=1
+        elif stop_time == time:
+            ser.write(stop)
+        
+        
     time += 1
-    stop_spinning_time = time +3
+    stop_time +=1
 ser.close()
