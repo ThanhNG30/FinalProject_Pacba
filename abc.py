@@ -13,7 +13,7 @@ if ser.isOpen():
     print('Open: ' + ser.portstr)
 else:
     sys.exit()
-    
+pygame.init()    
 # Initialize Roomba.    
 ser.write(bytearray([128, 132]))  # full mode (since pick up Roomba to end)
 time.sleep(1)
@@ -42,16 +42,18 @@ while True:
                 stop_spinning_time = time +3
             elif event.key == pygame.K_UP:
                 ser.write(drive_straight)
-    if time < spinning_time:
-        if left_k_pressed = True:
-            ser.write(turn_left)
-            spinning_time = time +1
-            if spinning_time == stop_spinning_time:
-                ser.write(stop)
-        elif right_k_pressed = True:
-            ser.write(turn_right) 
-            spinning_time = time +1
-            if spinning_time == stop_spinning_time:
-                ser.write(stop)
+        if time < spinning_time:
+            if left_k_pressed == True:
+                ser.write(turn_left)
+                spinning_time = time +1
+                if spinning_time == stop_spinning_time:
+                    ser.write(stop)
+                    spinning_time = 0
+            elif right_k_pressed == True:
+                ser.write(turn_right) 
+                spinning_time = time +1
+                if spinning_time == stop_spinning_time:
+                    ser.write(stop)
+                    spinning_time = 0
     time += 1
 ser.close()
