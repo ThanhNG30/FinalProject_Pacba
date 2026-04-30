@@ -19,8 +19,8 @@ ser.write(bytearray([128, 132]))  # full mode (since pick up Roomba to end)
 time.sleep(1)
 # 
 drive_straight = bytearray([137, 0, 0, 0, 0])
-turn_left = bytearray([137, 0 , 185, 0, 1])#ccw
-turn_right = bytearray([137, 0, 185, 255, 255])#cw
+turn_left = bytearray([137, 0 , 100, 0, 1])#ccw
+turn_right = bytearray([137, 0, 100, 255, 255])#cw
 stop = bytearray([137, 0, 0, 0, 0])
 left_k_pressed = False
 right_k_pressed = False
@@ -28,20 +28,30 @@ right_k_pressed = False
 # Keep a counter to help control timing
 time = 0
 spinning_time = 0
+stop_spinning_time = 0
 while True:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:            
             if event.key == pygame.K_LEFT:
                 left_k_pressed = True
-                spinning_time = time +30          
+                spinning_time = time +1  
+                stop_spinning_time = time +3
             elif event.key == pygame.K_RIGHT:
                 right_k_pressed = True
-                spinning_time = time +30
+                spinning_time = time +1
+                stop_spinning_time = time +3
             elif event.key == pygame.K_UP:
                 ser.write(drive_straight)
-    if time == spinning_time:
-        ser.write(stop)
     if time < spinning_time:
-        #spinning
+        if left_k_pressed = True:
+            ser.write(turn_left)
+            spinning_time = time +1
+            if spinning_time == stop_spinning_time:
+                ser.write(stop)
+        elif right_k_pressed = True:
+            ser.write(turn_right) 
+            spinning_time = time +1
+            if spinning_time == stop_spinning_time:
+                ser.write(stop)
     time += 1
 ser.close()
