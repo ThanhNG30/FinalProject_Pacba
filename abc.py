@@ -36,11 +36,8 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN: 
             if event.key == pygame.K_UP:
-                up_k_pressed = True
-                if up_k_pressed == True:
-                    ser.write(drive_forward)
-                elif event.key == pygame.KEYUP:
-                    up_k_pressed == False
+                ser.write(drive_forward)
+                if event.key == pygame.KEYUP:
                     ser.write(stop)
             elif event.key == pygame.K_LEFT:
                 left_k_pressed = True
