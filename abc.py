@@ -48,9 +48,7 @@ while True:
                 ser.write(turn_right)
                 time +=1
         elif stop_time == time:
-            ser.write(stop)
-        
-        
+            ser.write(stop) 
     time += 1
     stop_time +=1
 ser.close()
