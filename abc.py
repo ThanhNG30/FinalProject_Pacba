@@ -41,10 +41,10 @@ while True:
             elif event.key == pygame.K_UP:
                 ser.write(drive_forward)
         if stop_time > time:
-            while left_k_pressed = True:
+            if left_k_pressed = True:
                 ser.write(turn_left)
                 time +=1
-            while right_k_pressed = True:
+            elif right_k_pressed = True:
                 ser.write(turn_right)
                 time +=1
         elif stop_time == time:
