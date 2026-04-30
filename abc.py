@@ -24,6 +24,7 @@ turn_right = bytearray([137, 0, 100, 255, 255])#cw
 stop = bytearray([137, 0, 0, 0, 0])
 left_k_pressed = False
 right_k_pressed = False
+up_k_pressed = False
 #for keyboard
 pygame.init()
 
@@ -33,18 +34,23 @@ spinning_time = 2
 
 while True:
     for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:            
-            if event.key == pygame.K_LEFT:
+        if event.type == pygame.KEYDOWN: 
+            if event.key == pygame.K_UP:
+                up_k_pressed = True
+                if up_k_pressed == True:
+                    ser.write(drive_forward)
+                elif event.key == pygame.KEYUP:
+                    up_k_pressed == False
+                    ser.write(stop)
+            elif event.key == pygame.K_LEFT:
                 left_k_pressed = True
             elif event.key == pygame.K_RIGHT:
-                right_k_pressed = True
-            elif event.key == pygame.K_UP:
-                ser.write(drive_forward)
+                right_k_pressed = True            
         if stop_time > time:
-            if left_k_pressed = True:
+            if left_k_pressed == True:
                 ser.write(turn_left)
                 time +=1
-            elif right_k_pressed = True:
+            elif right_k_pressed == True:
                 ser.write(turn_right)
                 time +=1
         elif stop_time == time:
