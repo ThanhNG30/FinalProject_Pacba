@@ -19,8 +19,8 @@ ser.write(bytearray([128, 132]))  # full mode (since pick up Roomba to end)
 time.sleep(1)
 # 
 drive_forward = bytearray([137, 0, 100, 128, 0])
-turn_left = bytearray([137, 0 , 100, 0, 1])#ccw
-turn_right = bytearray([137, 0, 100, 255, 255])#cw
+turn_left = bytearray([137, 0 , 100, 0, 1]) #ccw
+turn_right = bytearray([137, 0, 100, 255, 255]) #cw
 stop = bytearray([137, 0, 0, 0, 0])
 left_k_pressed = False
 right_k_pressed = False
@@ -37,21 +37,26 @@ while True:
         if event.type == pygame.KEYDOWN: 
             if event.key == pygame.K_UP:
                 ser.write(drive_forward)
-                if event.key == pygame.KEYUP:
+                if event.type == pygame.KEYUP:
                     ser.write(stop)
             elif event.key == pygame.K_LEFT:
                 left_k_pressed = True
+                while left_k_pressed:
+                   if stop_time > time:
+                       ser.write(turn_left)
+                       time +=1 
+                   elif stop_time == time:
+                       ser.write(stop)
+                       left_k_pressed = False
             elif event.key == pygame.K_RIGHT:
-                right_k_pressed = True            
-        if stop_time > time:
-            if left_k_pressed == True:
-                ser.write(turn_left)
-                time +=1
-            elif right_k_pressed == True:
-                ser.write(turn_right)
-                time +=1
-        elif stop_time == time:
-            ser.write(stop) 
+                right_k_pressed = True
+                while right_k_pressed:
+                    if stop_time > time:
+                       ser.write(turn_right)
+                       time +=1 
+                   elif stop_time == time:
+                       ser.write(stop)
+                       right_k_pressed = False   
     time += 1
     stop_time +=1
 ser.close()
