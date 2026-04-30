@@ -30,7 +30,7 @@ pygame.init()
 
 # Keep a counter to help control timing
 time = 0
-spinning_time = 2
+stop_time = 2
 
 while True:
     for event in pygame.event.get():
