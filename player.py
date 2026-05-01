@@ -25,6 +25,10 @@ if ser.isOpen():
 else:
     sys.exit()
 
+# Initialize Roomba.
+ser.write(bytearray([128, 131]))  # safe mode
+time.sleep(1)  # need to pause after send mode
+
 #INIT SERVER
 #server.init()
 
