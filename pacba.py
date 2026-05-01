@@ -1,8 +1,7 @@
 import time     # for sleep() and time()
 from collections import deque
 
-# modules used for Pacba
-#import position
+# modules used for Pacba Class
 #import ir_sensors
 import pacba_movement
 
