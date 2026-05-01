@@ -67,7 +67,9 @@ while not game_over:
     events = gui.get_events()
     # Player controls Pacba to move forward and turn left/right
     player.run(events)
-
+    new_pos = player.get_last_position()
+    print("Pacba is now at: ", new_pos)
+    
     #RUN POSITION MODULE
     #It should update current player position and make it available as
     #x,y co-ordinates, will need info about movement from INPUT MODULE,
