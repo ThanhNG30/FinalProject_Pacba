@@ -7,6 +7,8 @@ from pygame.locals import *
 # Roomba command to stop
 STOP = bytearray([137, 0, 0, 0, 0])
 
+# Time takes to rotate a 90 degree angle is computed accordingly from
+# the Roomba's speed.
 # Roomba's rotation time for 90 degree angle
 TIME_ROTATE_90 = 1.875 # sec at the speed 100
 
@@ -38,25 +40,7 @@ def start_pygame(width, height):
     # Set up Pygame screen
     screen_size = (width, height)  # pixels
     screen = pygame.display.set_mode(screen_size)
-    # center_x = width // 2
-    # center_y = height // 2
     pygame.display.set_caption('Roomba Control')
-
-    #BLACK = 0, 0, 0  # RGB color
-    # # Background image with directional arrows, circle in center
-    # dir_image = pygame.image.load("directions.png").convert_alpha()
-    # screen.blit(dir_image, (0, 0))  # display image at top, left
-
-    # # "Stop" text label inside circle in center
-    # font = pygame.font.Font(None, 35)  # default font
-    # label_text = font.render("Stop", True, BLACK)
-    # label_size = label_text.get_rect()
-    # # Compute position to center label
-    # label_pos = ( \
-    #     center_x - label_size.width // 2, \
-    #     center_y - label_size.height // 2 \
-    #     )
-    # screen.blit(label_text, label_pos)
 
     # Update and display screen buffer
     pygame.display.update()    
