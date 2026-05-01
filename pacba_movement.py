@@ -1,12 +1,5 @@
-import serial   # PySerial: https://pypi.python.org/pypi/pyserial
-import time     # for sleep() and time()
-import sys      # for exit()
-import pygame   # for keyboard inputs
-from pygame.locals import * 
+import time     # for sleep() and time() 
 import math     # for pi
-
-# modules
-import pacba_gui
 
 # Distance between Roomba's wheels according to the documentation
 WHEELS_DISTANCE = 235 # mm
@@ -18,6 +11,7 @@ STOP = bytearray([137, 0, 0, 0, 0])
 # the Roomba's speed.
 # Roomba's rotation time for 90 degree angle
 # TIME_ROTATE_90 = 1.875 # sec at the speed 100
+
 
 # FUNCTION DEFINITIONS
 def get_time_to_rotate(angle, speed):
@@ -49,34 +43,5 @@ def int_as_2bytes(num):
 
     return [high, low]   
 
-def drive(serialObj, speed):
-    speed_bytes = int_as_2bytes(speed)
-    # Roomba commands to move
-    drive_forward = bytearray([137] + speed_bytes + [128, 0])
-
-    rotate_directions = { "LEFT": bytearray([137] + speed_bytes + [0, 1]), #ccw
-                      "RIGHT": bytearray([137] + speed_bytes + [255, 255])} #cw 
-
-    "Control Pacba Roomba with keyboard inputs to move up and rotate 90 degree left/right."
-    for event in pygame.event.get():
-        if event.type == KEYDOWN: 
-            if event.key == K_UP or event.key == K_w:
-                print("Driving FORWARD")
-                serialObj.write(drive_forward)
-            elif event.key == K_LEFT or event.key == K_a:
-                print("turning LEFT")
-                rotate_90(serialObj, speed, rotate_directions["LEFT"], time.time())
-            elif event.key == K_RIGHT or event.key == K_d:
-                print("turning RIGHT")
-                rotate_90(serialObj, speed, rotate_directions["RIGHT"], time.time())
-        elif event.type == KEYUP:
-            if event.key == K_UP or event.key == K_w:
-                print("STOP")
-                serialObj.write(STOP)
-
-
-
-
-
-
-
+#def drive(pacba, serialObj, speed):   
+    

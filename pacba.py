@@ -1,37 +1,82 @@
-import serial   # PySerial: https://pypi.python.org/pypi/pyserial
 import time     # for sleep() and time()
-import sys      # for exit()
-import pygame
+from collections import deque
+
+# modules used for Pacba
+#import position
+#import ir_sensors
 import pacba_movement
-import pacba_gui
 
-# Configure serial communication.
-#Set for Create 2 baud rate.
-#ser = serial.Serial(baudrate=115200, port="COMx")  # Windows: COM port #
-#ser = serial.Serial(baudrate=115200, port="/dev/ttyUSB0")  # Linux: dev file
-ser = serial.serial_for_url("socket://127.0.0.1:7654")
-if ser.isOpen():
-    print('Open: ' + ser.portstr)
-else:
-    sys.exit()
+class Pacba:
+
+    # FACING DIRECTIONS: x = 0 ; y = 1
+    FACING_DIR = ['X', 'Y']
+
+    def __init__(self, serialObject, speed=0):
+        "Initialize Pacba Class."
+        self.ser = serialObject
+        self.curr_axis = 1
+        self.speed = speed
+        self.positions = deque() #queue
+
+    def get_current_axis(self):
+        "Get Pacba's heading direction."
+        return self.curr_axis
     
-# Initialize Roomba.    
-ser.write(bytearray([128, 132]))  # full mode (since pick up Roomba to end)
-time.sleep(1)
+    def set_current_axis(self, val):
+        "Set Pacba's heading direction."
+        self.curr_axis = val
 
-# Pygame screen size
-PYGAME_SCREEN_WIDTH = 100 #px
-PYGAME_SCREEN_HEIGHT = 100 #px
+    def get_positions(self):
+        "Return a list of positions Pacba had been through."
+        return self.positions
+    
+    def get_last_position(self):
+        "Return Pacba's most recent position."
+        if self.positions:
+            return self.positions[-1] # return tuple (x,y)
+        
+    def add_new_position(self, pos):
+        "Add Pacba's new position into list of positions visited."
+        self.positions.append(pos)
+    
+    def run(self, events):
+        "Control Pacba Roomba with keyboard inputs to move up and rotate 90 degree left/right."
 
-# Initialize Pygame GUI
-pacba_gui.start_pygame(PYGAME_SCREEN_WIDTH, PYGAME_SCREEN_HEIGHT)
+        speed_bytes = pacba_movement.int_as_2bytes(self.speed)
+        # Roomba commands to move
+        drive_forward = bytearray([137] + speed_bytes + [128, 0])
+        rotate_directions = { "LEFT": bytearray([137] + speed_bytes + [0, 1]), #ccw
+                        "RIGHT": bytearray([137] + speed_bytes + [255, 255])} #cw     
 
-speed = 100
+        # Pacba's initial position
+        pos = (0,0)
+        
+        for event in events:
+            if event.type == KEYDOWN: 
+                if event.key == K_UP or event.key == K_w:
+                    print("Driving FORWARD")
+                    self.ser.write(drive_forward)
+                    pos[self.curr_axis] += 1
+                    
+                elif event.key == K_LEFT or event.key == K_a:
+                    print("turning LEFT")
+                    pacba_movement.rotate_90(self.ser, self.speed, rotate_directions["LEFT"], time.time())
+                    self.set_current_axis(~self.curr_axis)
 
-# Main function
-while True:
-    pacba_movement.drive(ser, speed) # drives Pacba from user's keyboard
+                elif event.key == K_RIGHT or event.key == K_d:
+                    print("turning RIGHT")
+                    pacba_movement.rotate_90(self.ser, self.speed, rotate_directions["RIGHT"], time.time())
+                    self.set_current_axis(~self.curr_axis)
 
-ser.close()
+            elif event.type == KEYUP:
+                if event.key == K_UP or event.key == K_w:
+                    print("STOP")
+                    self.ser.write(pacba_movement.STOP)
+        
+        # Update Pacba's position after all events were processed
+        self.add_new_position(pos)
 
+
+
+    
 
