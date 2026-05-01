@@ -10,7 +10,6 @@ STOP = bytearray([137, 0, 0, 0, 0])
 # Roomba's rotation time for 90 degree angle
 TIME_ROTATE_90 = 1.875 # sec at the speed 100
 
-
 # FUNCTION DEFINITIONS
 def rotate_90(serialObj, direction, stop_time):
     "Control Roomba's rotation clockwise/counter-clockwise to be 90 degree."
