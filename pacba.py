@@ -2,7 +2,8 @@ import serial   # PySerial: https://pypi.python.org/pypi/pyserial
 import time     # for sleep() and time()
 import sys      # for exit()
 import pygame
-import pacba_control
+import pacba_movement
+import pacba_gui
 
 # Configure serial communication.
 #Set for Create 2 baud rate.
@@ -22,12 +23,14 @@ time.sleep(1)
 PYGAME_SCREEN_WIDTH = 100 #px
 PYGAME_SCREEN_HEIGHT = 100 #px
 
-# Initialize Pygame
-pacba_control.start_pygame(PYGAME_SCREEN_WIDTH, PYGAME_SCREEN_HEIGHT)
+# Initialize Pygame GUI
+pacba_gui.start_pygame(PYGAME_SCREEN_WIDTH, PYGAME_SCREEN_HEIGHT)
+
+speed = 100
 
 # Main function
 while True:
-    pacba_control.drive(ser) # drives Pacba from user's keyboard
+    pacba_movement.drive(ser, speed) # drives Pacba from user's keyboard
 
 ser.close()
 
