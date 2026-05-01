@@ -1,5 +1,6 @@
 import time     # for sleep() and time()
 from collections import deque
+from pygame.locals import * 
 
 # modules used for Pacba Class
 #import ir_sensors
@@ -8,14 +9,16 @@ import pacba_movement
 class Pacba:
 
     # FACING DIRECTIONS: x = 0 ; y = 1
-    FACING_DIR = ['X', 'Y']
+    FACING_DIR = [1, 1, -1, -1]
 
     def __init__(self, serialObject, speed=0):
         "Initialize Pacba Class."
         self.ser = serialObject
         self.curr_axis = 1
+        self.curr_facing_dir = 0
         self.speed = speed
         self.positions = deque() #queue
+        self.positions.append((0,0))
 
     def get_current_axis(self):
         "Get Pacba's heading direction."
@@ -47,25 +50,33 @@ class Pacba:
         rotate_directions = { "LEFT": bytearray([137] + speed_bytes + [0, 1]), #ccw
                         "RIGHT": bytearray([137] + speed_bytes + [255, 255])} #cw     
 
-        # Pacba's initial position
-        pos = (0,0)
+        # Pacba's initial position is last position reached
+        pos = list(self.get_last_position())
         
+        # Travelling time in forward direction
+        time_travelled = 0.0 #sec
+
         for event in events:
             if event.type == KEYDOWN: 
                 if event.key == K_UP or event.key == K_w:
                     print("Driving FORWARD")
                     self.ser.write(drive_forward)
-                    pos[self.curr_axis] += 1
+                    start_driving_time = time.time()
+                    pos[self.curr_axis] += (self.speed * (time.time() - start_driving_time) * 
+                                            self.FACING_DIR[self.curr_facing_dir % len(self.FACING_DIR)])
+
                     
                 elif event.key == K_LEFT or event.key == K_a:
                     print("turning LEFT")
                     pacba_movement.rotate_90(self.ser, self.speed, rotate_directions["LEFT"], time.time())
                     self.set_current_axis(~self.curr_axis)
+                    self.curr_facing_dir -= 1
 
                 elif event.key == K_RIGHT or event.key == K_d:
                     print("turning RIGHT")
                     pacba_movement.rotate_90(self.ser, self.speed, rotate_directions["RIGHT"], time.time())
                     self.set_current_axis(~self.curr_axis)
+                    self.curr_facing_dir += 1
 
             elif event.type == KEYUP:
                 if event.key == K_UP or event.key == K_w:
@@ -73,7 +84,7 @@ class Pacba:
                     self.ser.write(pacba_movement.STOP)
         
         # Update Pacba's position after all events were processed
-        self.add_new_position(pos)
+        self.add_new_position(tuple(pos))
 
 
 
