@@ -41,7 +41,5 @@ def int_as_2bytes(num):
     # mask off any additional high byte(s).
     high = (num >> 8) & 0xFF
 
-    return [high, low]   
-
-#def drive(pacba, serialObj, speed):   
+    return [high, low]     
     
