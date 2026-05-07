@@ -4,8 +4,10 @@ from pygame.locals import *
 #Constants
 BACKGROUND_COLOR = (255,255,255) #RGB White
 SCORE_COLOR = (0,255,0) #RGB Green
+SCORE_FONT_SIZE = 32
 
 class GUI:
+    """Class for controlling the GUI display"""
 
     def __init__(self, width, height):
         "Initialize Pygame modules and set up Pygame screen."
@@ -18,12 +20,12 @@ class GUI:
         pygame.display.set_caption('Roomba Control')
 
         # Create a font for score
-        self._score_font = pygame.font.Font(size=14)
+        self._score_font = pygame.font.Font(size=SCORE_FONT_SIZE)
 
         # Update and display screen buffer
         pygame.display.update()
 
-    def get_events():
+    def get_events(self):
         return pygame.event.get()
 
     def update(self,score):
@@ -32,13 +34,13 @@ class GUI:
         self._screen = pygame.display.get_surface()
 
         #Clear the screen
-        self._screen.fill()
+        self._screen.fill(BACKGROUND_COLOR)
 
         #DRAW ROOMBA POSITION/WALLS/ETC (possibly separate functions)
 
         #For now this just displays the current score in the ui -Ryan
         score_text = self._score_font.render(f"Score: {score}", True, SCORE_COLOR)
-        score_rect = score_text.get_rect(topright=(self._screen.get_width - 10, 10))
+        score_rect = score_text.get_rect(topright=(self._screen.get_width() - 10, 10))
         self._screen.blit(score_text, score_rect)
 
         #We call .flip at end to actaully display the updated screen

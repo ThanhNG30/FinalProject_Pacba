@@ -8,7 +8,7 @@ import time
 
 #Our modules
 #import server
-import gui # gui
+from gui import GUI # gui
 from pacba import Pacba # class Pacba
 from scoring import Scoring
 
@@ -42,7 +42,7 @@ score = Scoring(player)
 # Pygame screen size
 PYGAME_SCREEN_WIDTH = 1000 #px
 PYGAME_SCREEN_HEIGHT = 1000 #px
-gui.start_pygame(PYGAME_SCREEN_WIDTH, PYGAME_SCREEN_HEIGHT)
+gui = GUI(PYGAME_SCREEN_WIDTH, PYGAME_SCREEN_HEIGHT)
 
 #CONSTANTS FOR GAME LOGIC
 game_over = False #Set to true when loop should terminate
@@ -86,7 +86,7 @@ while not game_over:
 
     #UPDATE GUI
     #With current position and points scored, if game over display game over
-    #gui.update()
+    gui.update(score.get_score())
 
 #AFTER PLAY CLEANUP
 
