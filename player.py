@@ -7,11 +7,9 @@ import sys
 import time
 
 #Our modules
-import server
-import gui
-import position
-import input
-import ir_sensors
+#import server
+import gui # gui
+from pacba import Pacba # class Pacba
 
 
 #INIT CONNECTION TO PLAYER ROOMBA
@@ -29,11 +27,18 @@ else:
 ser.write(bytearray([128, 131]))  # safe mode
 time.sleep(1)  # need to pause after send mode
 
+# Initialize Pacba
+PACBA_SPEED = 100
+player = Pacba(serialObject=ser, speed=PACBA_SPEED)
+
 #INIT SERVER
 #server.init()
 
 #INIT PYGAME/GUI
-#gui.init()
+# Pygame screen size
+PYGAME_SCREEN_WIDTH = 1000 #px
+PYGAME_SCREEN_HEIGHT = 1000 #px
+gui.start_pygame(PYGAME_SCREEN_WIDTH, PYGAME_SCREEN_HEIGHT)
 
 #CONSTANTS FOR GAME LOGIC
 game_over = False #Set to true when loop should terminate
@@ -57,10 +62,14 @@ while not game_over:
     #It should disable forward movement based on virtual wall data from IR
     #sensor module.
     #input.update(ser)
-    #input.turning_left
-    #input.turning_right
-    #input.moving_forward
-
+    
+    # Get events from Pygame
+    events = gui.get_events()
+    # Player controls Pacba to move forward and turn left/right
+    player.run(events)
+    new_pos = player.get_last_position()
+    print("Pacba is now at: ", new_pos)
+    
     #RUN POSITION MODULE
     #It should update current player position and make it available as
     #x,y co-ordinates, will need info about movement from INPUT MODULE,
