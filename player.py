@@ -10,6 +10,7 @@ import time
 #import server
 import gui # gui
 from pacba import Pacba # class Pacba
+from scoring import Scoring
 
 
 #INIT CONNECTION TO PLAYER ROOMBA
@@ -30,6 +31,9 @@ time.sleep(1)  # need to pause after send mode
 # Initialize Pacba
 PACBA_SPEED = 100
 player = Pacba(serialObject=ser, speed=PACBA_SPEED)
+
+# Initialize scoring module
+score = Scoring(player)
 
 #INIT SERVER
 #server.init()
@@ -53,15 +57,12 @@ while not game_over:
     #game_over = server.is_game_over()
 
     #RUN/UPDATE IR SENSOR MODULE DATA FOR VIRTUAL WALLS/ DOCK FORCE FIELDS 
-    #ir_sensors.update(ser)
-    #ir_sensors.virtual_wall_detected
-    #ir_sensors.dock_force_field_detected
+    player.ir_sensors.update()
 
     #RUN INPUT MODULE FOR PLAYER INPUT/MOVEMENT
     #It needs to provide information about whether or not player is moving
     #It should disable forward movement based on virtual wall data from IR
     #sensor module.
-    #input.update(ser)
     
     # Get events from Pygame
     events = gui.get_events()
@@ -81,8 +82,7 @@ while not game_over:
     #DETERMINE SCORING
     #Uses data from IR sensor module and co-ordinates from position module to
     #determine if a new point has been scored
-    #scoring.update()
-    #scoring.score
+    score.update()
 
     #UPDATE GUI
     #With current position and points scored, if game over display game over
