@@ -26,7 +26,7 @@ class IR_Sensors:
 
     def __init__(self, pacba):
         """Inits an IR_Sensors object, takes a  parent pacba object"""
-        self.pacba = pacba
+        self._pacba = pacba
         # Constants for holding current detection status, initialized to false
         # when module is first loaded (the first time it is imported in the process)
         self._virtual_wall_detected = False
@@ -37,8 +37,8 @@ class IR_Sensors:
         Updates the virtual_wall_detected and dock_force_field_detected booleans.
         """
         # Get sensor data.
-        self.pacba.ser.write(bytearray(QUERY_LIST + [len(REQUIRED_PACKETS)] + REQUIRED_PACKETS))
-        sensors = self.pacba.ser.read(BYTES_RETURNED)
+        self._pacba.ser.write(bytearray(QUERY_LIST + [len(REQUIRED_PACKETS)] + REQUIRED_PACKETS))
+        sensors = self._pacba.ser.read(BYTES_RETURNED)
 
         # We want to set these back to False in case they were True last time update
         # was called, we will then check if they should be set to True again.  
