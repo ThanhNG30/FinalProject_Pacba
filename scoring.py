@@ -80,3 +80,6 @@ class Scoring:
         display_bytes = bytearray(display_score,"ascii")
         self._pacba.ser.write(DISPLAY_TEXT + display_bytes)
 
+    def get_score(self):
+        """Returns the current score."""
+        return self._score_counter
