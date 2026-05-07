@@ -39,12 +39,15 @@ class Scoring:
         """Checks if roomba is near any place in the history where it has already scored.
         Returns True/False"""
 
-        #get the Roomba's most up to date x/y position
+        #Get the Roomba's most up to date x/y position
         current_x, current_y = self.pacba.get_last_position()
 
-        #
+        #Uses 2x the dock detection range to determine if this is near an already scored
+        #dock.  There is room for improvement to this to better pinpoint the dock
+        #position.  
         for x, y in self.score_pos_history:
-            if x - 1000 < current_x < x + 1000 and y - 1000 < current_y < y + 1000:
+            if x - DOCK_DETECTION_RANGE * 2 < current_x < x + DOCK_DETECTION_RANGE * 2 \
+            and y - DOCK_DETECTION_RANGE * 2 < current_y < y + DOCK_DETECTION_RANGE * 2:
                 return True
         return False
 
