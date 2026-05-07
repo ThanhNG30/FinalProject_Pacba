@@ -10,7 +10,10 @@ scored twice.
 from pacba import Pacba #Imported so type hints / vs code intellisense will work
 
 #Consants
-DOCK_DETECTION_RANGE = 500 #In mm, actual tested range is a little below this.  
+DOCK_DETECTION_RANGE = 500 #In mm, actual tested range is a little below this.
+
+DISPLAY_TEXT = bytearray([164]) #Roomba LED display text command
+DISPLAY_LEN = 4 #Roomba LED display size
 
 class Scoring:
     """Class which handles scoring, needs a Pacba object to figure out
@@ -23,6 +26,8 @@ class Scoring:
         self._score_pos_history = []
         #Initialize actual score counter to 0
         self._score_counter = 0
+        #Set initial led score display
+        self.led_display_score()
 
     def update(self):
         """Checks to see if score should be updated, and adds it to history if so"""
@@ -34,6 +39,12 @@ class Scoring:
 
             #Then update score counter
             self._score_counter += 1
+
+            #Then update led score display, note this is inside the conditional
+            #so score is only updated on score change, which means when it changes
+            #elsewhere it needs to called as well
+            self.led_display_score()
+
 
     def is_near_already_scored(self):
         """Checks if roomba is near any place in the history where it has already scored.
@@ -54,4 +65,18 @@ class Scoring:
     def clear(self):
         """Resets score_counter to 0"""
         self._score_counter = 0
+        self.led_display_score()
+
+    def led_display_score(self):
+        """Displays the current score on the Pacba's led display"""
+        #Get current score counter as a string
+        display_score = str(self._score_counter)
+        
+        #If current score is too short, add leading 0's
+        if len(display_score) < DISPLAY_LEN:
+            display_score = ("0" * (DISPLAY_LEN - len(display_score))) + display_score
+
+        #Send pacba command to display score
+        display_bytes = bytearray(display_score,"ascii")
+        self._pacba.ser.write(DISPLAY_TEXT + display_bytes)
 
