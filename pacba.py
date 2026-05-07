@@ -3,7 +3,7 @@ from collections import deque
 from pygame.locals import * 
 
 # modules used for Pacba Class
-#import ir_sensors
+from ir_sensors import IR_Sensors
 import pacba_movement
 
 class Pacba:
@@ -19,6 +19,8 @@ class Pacba:
         self.speed = speed
         self.positions = deque() #queue
         self.positions.append((0,0))
+        # Added a line to initiliaze the IR_Sensors component -Ryan
+        self.ir_sensors = IR_Sensors(self)
 
     def get_current_axis(self):
         "Get Pacba's heading direction."
@@ -58,7 +60,10 @@ class Pacba:
 
         for event in events:
             if event.type == KEYDOWN: 
-                if event.key == K_UP or event.key == K_w:
+                # Appended an "and not" condition to prevent forward movement 
+                # when a virtual wall is detected -Ryan
+                if (event.key == K_UP or event.key == K_w) \
+                and not self.ir_sensors.virtual_wall_detected():
                     print("Driving FORWARD")
                     self.ser.write(drive_forward)
                     start_driving_time = time.time()
