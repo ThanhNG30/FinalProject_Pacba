@@ -2,43 +2,53 @@
 Author: Ryan Fox
 PACba Final Project
 Module: scoring.py
-Description: Module which tracks/updates scoring information.  It keeps a
-history of where docks have been detected to ensure they aren't scored twice.
+Description: Provies a Scoring class which tracks/updates scoring information.  
+It keeps a history of where docks have been detected to ensure they aren't 
+scored twice.
 """
 
-import ir_sensors
-import position
+from pacba import Pacba #Imported so type hints / vs code intellisense will work
 
 #Consants
 DOCK_DETECTION_RANGE = 500 #In mm, actual tested range is a little below this.  
 
-#initialize an empty list to store a history of where points have been scored
-score_pos_history = []
+class Scoring:
+    """Class which handles scoring, needs a Pacba object to figure out
+    position and detect dock force fields"""
+    def __init__(self, pacba: Pacba):
+        """Inits a Scoring object, takes a pacba object as an argument."""
+        #Need a pacba object to get sensor and position data from
+        self.pacba: Pacba = pacba
+        #initialize an empty list to store a history of where points have been scored
+        self.score_pos_history = []
+        #Initialize actual score counter to 0
+        self.score_counter = 0
 
-#Keep track of actual score
-score_counter = 0
+    def update(self):
+        """Checks to see if score should be updated, and adds it to history if so"""
+        
+        if not self.is_near_already_scored():    
+            #If theres a force field, add current position to score history
+            if self.pacba.ir_sensors.dock_force_field_detected() == True:
+                score_pos_history += [self.pacba.get_last_position()]
 
-def update():
-    """Checks to see if score should be updated, and adds it to history if so"""
-    
-    if not is_near_already_scored():    
-        #If theres a force field, add current position to score history
-        if ir_sensors.dock_force_field_detected == True:
-            score_pos_history += [(position.x, position.y)]
+            #Then update score counter
+            self.score_counter += 1
 
-        #Then update score counter
-        score_counter += 1
+    def is_near_already_scored(self):
+        """Checks if roomba is near any place in the history where it has already scored.
+        Returns True/False"""
 
-def is_near_already_scored():
-    """Checks if roomba is near any place in the history where it has already scored.
-    Returns True/False"""
+        #get the Roomba's most up to date x/y position
+        current_x, current_y = self.pacba.get_last_position()
 
-    for x, y in score_pos_history:
-        if x - 1000 < position.x < x + 1000 and y - 1000 < position.y < y + 1000:
-            return True
-    return False
+        #
+        for x, y in self.score_pos_history:
+            if x - 1000 < current_x < x + 1000 and y - 1000 < current_y < y + 1000:
+                return True
+        return False
 
-def clear():
-    """Resets score_counter to 0"""
-    score_counter = 0
+    def clear(self):
+        """Resets score_counter to 0"""
+        self.score_counter = 0
 
