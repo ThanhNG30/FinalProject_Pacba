@@ -16,4 +16,4 @@ def start_pygame(width, height):
     pygame.display.update()
 
 def get_events():
-    return pygame.events.get()
+    return pygame.event.get()
