@@ -37,8 +37,8 @@ class Scoring:
             if self._pacba.ir_sensors.dock_force_field_detected() == True:
                 self._score_pos_history += [self._pacba.get_last_position()]
 
-            #Then update score counter
-            self._score_counter += 1
+                #Then update score counter
+                self._score_counter += 1
 
             #Then update led score display, note this is inside the conditional
             #so score is only updated on score change, which means when it changes
