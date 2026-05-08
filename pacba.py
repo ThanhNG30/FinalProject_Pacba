@@ -1,5 +1,6 @@
 import time     # for sleep() and time()
 from collections import deque
+import pygame
 from pygame.locals import * 
 
 # modules used for Pacba Class
@@ -67,6 +68,11 @@ class Pacba:
         # Pacba's initial position is last position reached
         pos = list(self.get_last_position())
         distance_travelled = 0
+
+        #Get the state of keys being pressed as a list of bools
+        #keys[pygame.K_UP] is true when the up arrow is pressed
+        keys = pygame.key.get_pressed()
+
         for event in events:
             # # Travelling time in straight direction
             # start_driving_time = time.time() #sec
