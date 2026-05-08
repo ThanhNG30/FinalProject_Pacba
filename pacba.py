@@ -73,22 +73,31 @@ class Pacba:
         #keys[pygame.K_UP] is true when the up arrow is pressed
         keys = pygame.key.get_pressed()
 
+        # Appended an "and not" condition to prevent forward movement 
+        # when a virtual wall is detected -Ryan
+        if (keys[K_UP] or keys[K_w]) \
+        and not self.ir_sensors.virtual_wall_detected():
+            if not self.is_driving:
+                self.driving_time_start = time.time()
+                self.is_driving = True
+                print("Driving FORWARD")
+                self.ser.write(drive_forward)    
+        # K_UP or K_w is not held
+        else:
+            self.is_driving = False
+            self.ser.write(pacba_movement.STOP)
+            distance_travelled = (self.speed * (time.time() - self.driving_time_start) * 
+                            self.FACING_DIR[self.curr_facing_dir % len(self.FACING_DIR)])
+            print("Distance calculated = ", distance_travelled)
+            print("STOP")  
+
         for event in events:
             # # Travelling time in straight direction
             # start_driving_time = time.time() #sec
 
             if event.type == KEYDOWN: 
-                # Appended an "and not" condition to prevent forward movement 
-                # when a virtual wall is detected -Ryan
-                if (event.key == K_UP or event.key == K_w) \
-                and not self.ir_sensors.virtual_wall_detected():
-                    if not self.is_driving:
-                        self.driving_time_start = time.time()
-                        self.is_driving = True
-                    print("Driving FORWARD")
-                    self.ser.write(drive_forward)
                     
-                elif event.key == K_LEFT or event.key == K_a:
+                if event.key == K_LEFT or event.key == K_a:
                     print("turning LEFT")
                     pacba_movement.rotate_90(self.ser, self.speed, rotate_directions["LEFT"], time.time())
                     self.curr_axis = ~self.curr_axis
@@ -101,15 +110,6 @@ class Pacba:
                     self.curr_axis = ~self.curr_axis
                     self.curr_facing_dir += 1
                     break
-
-            elif event.type == KEYUP:
-                if event.key == K_UP or event.key == K_w:
-                    self.is_driving = False
-                    self.ser.write(pacba_movement.STOP)
-                    distance_travelled = (self.speed * (time.time() - self.driving_time_start) * 
-                                    self.FACING_DIR[self.curr_facing_dir % len(self.FACING_DIR)])
-                    print("Distance calculated = ", distance_travelled)
-                    print("STOP")
 
             # Update Pacba's current position
             pos[self.curr_axis] += distance_travelled
