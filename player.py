@@ -32,6 +32,9 @@ time.sleep(1)  # need to pause after send mode
 PACBA_SPEED = 100
 player = Pacba(serialObject=ser, speed=PACBA_SPEED)
 
+#Score needed to win (number of docks in play)
+VICTORY_SCORE = 2
+
 # Initialize scoring module
 score = Scoring(player)
 
@@ -50,10 +53,11 @@ PYGAME_SCREEN_HEIGHT = 100 #px
 gui = GUI(PYGAME_SCREEN_WIDTH, PYGAME_SCREEN_HEIGHT, PLAY_AREA_WIDTH, PLAY_AREA_HEIGHT)
 
 #CONSTANTS FOR GAME LOGIC
-game_over = False #Set to true when loop should terminate
+game_over = False #Set to true when lost
+game_won = False #Set to true when won
 game_start_time = time.time()
 #START GAME LOOP
-while not game_over:
+while not game_over or game_won:
     #CALCULATE CURRENT TICK TIME
     current_tick_time = time.time()
 
@@ -88,6 +92,8 @@ while not game_over:
     #Uses data from IR sensor module and co-ordinates from position module to
     #determine if a new point has been scored
     score.update()
+    if score.get_score() > VICTORY_SCORE:
+        game_won = True
 
     #UPDATE GUI
     #With current position and points scored, if game over display game over
