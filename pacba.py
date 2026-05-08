@@ -20,7 +20,7 @@ class Pacba:
         self.positions = deque() #queue
         self.positions.append((0,0))
         # Added a line to initiliaze the IR_Sensors component -Ryan
-        self.ir_sensors = IR_Sensors(self)
+        self.ir_sensors = IR_Sensors(self.ser)
 
     def get_current_axis(self):
         "Get Pacba's heading direction."
