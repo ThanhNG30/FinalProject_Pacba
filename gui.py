@@ -26,7 +26,7 @@ class GUI:
 
         # Set up Pygame screen
         
-        self._screen = pygame.display.set_mode(self._screen_width, self.screen_height)
+        self._screen = pygame.display.set_mode((self._screen_width, self._screen_height))
         pygame.display.set_caption('Roomba Control')
 
         # Create a font for score
