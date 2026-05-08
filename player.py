@@ -36,8 +36,8 @@ player = Pacba(serialObject=ser, speed=PACBA_SPEED)
 
 #INIT PYGAME/GUI
 # Pygame screen size
-PYGAME_SCREEN_WIDTH = 200 #px
-PYGAME_SCREEN_HEIGHT = 200 #px
+PYGAME_SCREEN_WIDTH = 100 #px
+PYGAME_SCREEN_HEIGHT = 100 #px
 gui.start_pygame(PYGAME_SCREEN_WIDTH, PYGAME_SCREEN_HEIGHT)
 
 #CONSTANTS FOR GAME LOGIC
@@ -69,7 +69,7 @@ while not game_over:
     player.run(events)
     new_pos = player.get_last_position()
     print("Pacba is now at: ", new_pos)
-    
+
     #RUN POSITION MODULE
     #It should update current player position and make it available as
     #x,y co-ordinates, will need info about movement from INPUT MODULE,
