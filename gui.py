@@ -9,14 +9,24 @@ SCORE_FONT_SIZE = 32
 class GUI:
     """Class for controlling the GUI display"""
 
-    def __init__(self, width, height):
-        "Initialize Pygame modules and set up Pygame screen."
+    def __init__(self, screen_width, screen_height, phys_width, phys_height):
+        """Inits a GUI object, takes 4 arguments, a screen size
+        and the dimensions of a physical play area both as width, height """
+        
+        #Set size of display screen in pixels
+        self._screen_width = screen_width
+        self._screen_height = screen_height
+
+        #Set physical size of play area, used to scale co-ordinates to gui
+        self._phys_width = phys_width
+        self._phys_height = phys_height
+
         # Initialize Pygame
         pygame.init()  
 
         # Set up Pygame screen
-        self.screen_size = (width, height)  # pixels
-        self._screen = pygame.display.set_mode(self.screen_size)
+        
+        self._screen = pygame.display.set_mode(self._screen_width, self.screen_height)
         pygame.display.set_caption('Roomba Control')
 
         # Create a font for score
@@ -45,3 +55,12 @@ class GUI:
 
         #We call .flip at end to actaully display the updated screen
         pygame.display.flip()
+
+    def get_screen_coords_from_physical_coords(self,phys_x, phys_y):
+        """Returns screen coordinates (in pixels) from physical coordinates"""
+
+        #Scale coordinates using screen and physical dimensions set in init
+        screen_x = phys_x * self._screen_width / self._phys_width
+        screen_y = phys_y * self._screen_height / self._phys_height
+
+        return screen_x, screen_y

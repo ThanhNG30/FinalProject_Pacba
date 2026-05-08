@@ -39,10 +39,15 @@ score = Scoring(player)
 #server.init()
 
 #INIT PYGAME/GUI
+#Physical area size, just set it to 5000 for testing, units should match
+#whatever Pacba is providing (mm hopefully) -Ryan
+PLAY_AREA_WIDTH = 5000 
+PLAY_AREA_HEIGHT = 5000
+
 # Pygame screen size
 PYGAME_SCREEN_WIDTH = 1000 #px
-PYGAME_SCREEN_HEIGHT = 1000 #px
-gui = GUI(PYGAME_SCREEN_WIDTH, PYGAME_SCREEN_HEIGHT)
+PYGAME_SCREEN_HEIGHT = 1000 #px 
+gui = GUI(PYGAME_SCREEN_WIDTH, PYGAME_SCREEN_HEIGHT, PLAY_AREA_WIDTH, PLAY_AREA_HEIGHT)
 
 #CONSTANTS FOR GAME LOGIC
 game_over = False #Set to true when loop should terminate
