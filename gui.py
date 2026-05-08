@@ -64,3 +64,5 @@ class GUI:
         screen_y = phys_y * self._screen_height / self._phys_height
 
         return screen_x, screen_y
+def get_events():
+    return pygame.event.get()
