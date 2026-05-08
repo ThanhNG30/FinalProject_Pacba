@@ -54,11 +54,11 @@ class Pacba:
 
         # Pacba's initial position is last position reached
         pos = list(self.get_last_position())
-        
-        # Travelling time in forward direction
-        time_travelled = 0.0 #sec
 
         for event in events:
+            # Travelling time in straight direction
+            start_driving_time = time.time() #sec
+
             if event.type == KEYDOWN: 
                 # Appended an "and not" condition to prevent forward movement 
                 # when a virtual wall is detected -Ryan
@@ -66,30 +66,33 @@ class Pacba:
                 and not self.ir_sensors.virtual_wall_detected():
                     print("Driving FORWARD")
                     self.ser.write(drive_forward)
-                    start_driving_time = time.time()
-                    pos[self.curr_axis] += (self.speed * (time.time() - start_driving_time) * 
-                                            self.FACING_DIR[self.curr_facing_dir % len(self.FACING_DIR)])
-
                     
                 elif event.key == K_LEFT or event.key == K_a:
                     print("turning LEFT")
                     pacba_movement.rotate_90(self.ser, self.speed, rotate_directions["LEFT"], time.time())
                     self.set_current_axis(~self.curr_axis)
                     self.curr_facing_dir -= 1
+                    break
 
                 elif event.key == K_RIGHT or event.key == K_d:
                     print("turning RIGHT")
                     pacba_movement.rotate_90(self.ser, self.speed, rotate_directions["RIGHT"], time.time())
                     self.set_current_axis(~self.curr_axis)
                     self.curr_facing_dir += 1
+                    break
 
             elif event.type == KEYUP:
                 if event.key == K_UP or event.key == K_w:
                     print("STOP")
                     self.ser.write(pacba_movement.STOP)
+            
+            distance_travelled = (self.speed * (time.time() - start_driving_time) * 
+                                    self.FACING_DIR[self.curr_facing_dir % len(self.FACING_DIR)])
+            print("Distance calculated = ", distance_travelled)
+            pos[self.curr_axis] += distance_travelled
         
         # Update Pacba's position after all events were processed
-        self.add_new_position(tuple(pos))
+        self.add_new_position(tuple([int(i) for i in pos]))
 
 
 
