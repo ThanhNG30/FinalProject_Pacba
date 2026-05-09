@@ -74,7 +74,6 @@ class GUI:
 
         return screen_x, screen_y
     
-    def setup(self):
         
 
 
