@@ -1,5 +1,4 @@
 from socket import *
-import threading
 
 # server socket
 server = socket(AF_INET, SOCK_STREAM)
@@ -20,7 +19,6 @@ def init_server():
         (client, addr) = server.accept()
         print("Client accepted from: ", addr)
         clients.append(client)
-        threading.Thread(target=handle_client, args=(client,)).start()
         
 def update_server():
     global ghosts_caughts
@@ -46,6 +44,6 @@ def update_server():
     
 def shutdown_server():
     for client in clients:
-    client.close()
+        client.close()
     server.close()
     print("Server exited.")
