@@ -1,23 +1,29 @@
 from socket import *
+import threading
+
 # server socket
 server = socket(AF_INET, SOCK_STREAM)
 host = ""
 port = 5150
+# bind server
+server.bind((host, port))
+server.listen(5)
+
+clients = []
 ghosts_caught = False
+
 def init_server():
-    global client
-    # bind server
-    server.bind((host, port))
-
+    
     print("Waiting client...")
-    server.listen(5)
-
-    # Accept connection
-    (client, addr) = server.accept()
-    print("Client accepted from: ", addr)
-
+    while True:
+        # Accept connection
+        (client, addr) = server.accept()
+        print("Client accepted from: ", addr)
+        clients.append(client)
+        threading.Thread(target=handle_client, args=(client,)).start()
+        
 def update_server():
-    global ghosts_caught
+    global ghosts_caughts
     while True:
         # recived data 
         data = client.recv(1024)
@@ -35,8 +41,11 @@ def update_server():
         elif text == "exit":
             break
     print("Ghosts caught:", ghosts_caught)
+    clients.remove(client)
+    client.close()
     
-def shutdown_server(): 
+def shutdown_server():
+    for client in clients:
     client.close()
     server.close()
     print("Server exited.")
