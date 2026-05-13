@@ -7,7 +7,7 @@ port = 5150
 def connect():
     client.connect((host, port))
     print("Conected to server:")
-# Function to runthe cleint loop.
+# Function to run the cleint loop.
 def run():
     while True:
         # asks user for input
