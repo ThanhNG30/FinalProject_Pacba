@@ -111,8 +111,8 @@ class Pacba:
                     self.curr_facing_dir += 1
                     break
 
-            # Update Pacba's current position
-            pos[self.curr_axis] += distance_travelled
+        # Update Pacba's current position
+        pos[self.curr_axis] += distance_travelled
         
         # Update Pacba's position after all events were processed
         self.add_new_position(tuple([int(i) for i in pos]))
