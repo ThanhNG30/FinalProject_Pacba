@@ -1,6 +1,7 @@
 import time     # for sleep() and time()
 import pygame
 from collections import deque
+import pygame
 from pygame.locals import * 
 
 # modules used for Pacba Class
@@ -33,7 +34,7 @@ class Pacba:
         self.is_driving = False
 
         # Added a line to initiliaze the IR_Sensors component -Ryan
-        self.ir_sensors = IR_Sensors(self)
+        self.ir_sensors = IR_Sensors(self.ser)
 
     # def get_current_axis(self):
     #     "Get Pacba's moving direction."
