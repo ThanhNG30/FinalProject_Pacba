@@ -39,12 +39,12 @@ def update_server():
         # Logic
         if text == "caught":
             ghosts_caught = True
-        elif text == "not caught":
-            ghosts_caught = False
         elif text == "exit":
             clients.remove(client)
             client.close()
             continue
+        else:
+            ghosts_caught = False
 
 def shutdown_server():
     # close all connections
