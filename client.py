@@ -8,18 +8,21 @@ def connect():
     client.connect((host, port))
     print("Conected to server:")
 # Function to run the cleint loop.
-def run(caught):
-        # asks user for input
-        text = input("Enter message: ")
-        # convert string to bytes
-        data = text.encode()
-        # send encode message to the server
-        client.send(data)
-        # wait for response
-        response = client.recv(1024).decode()
-        # print server response
-        print(response)
-        if text == "exit":
-            break
-
+def run(text):
+    if text == "caught":
+        ghosts_caught = True
+    elif text == "not caught":
+        ghosts_caught = False
+    if text == "exit":
+        break
+            
+    # convert string to bytes
+    data = text.encode()
+    # send encode message to the server
+    client.send(data)
+    # wait for response
+    response = client.recv(1024).decode()
+    # print server response
+    print(response)
+       
 client.close()
