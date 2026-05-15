@@ -26,25 +26,25 @@ def update_server():
     for client in clients:
         
     #while True:
-        # recived data 
-        data = client.recv(1024)
-        # check for data 
-        if not data:
-            clients.remove(client)
-            client.close()
-            continue
-        # process data, converts bytes to string.
-        text = data.decode()
-        print("data:", text)
-        # Logic
-        if text == "caught":
-            ghosts_caught = True
-        elif text == "not caught":
-            ghosts_caught = False
-        elif text == "exit":
-            clients.remove(client)
-            client.close()
-            continue
+    # recived data 
+    data = client.recv(1024)
+    # check for data 
+    if not data:
+        clients.remove(client)
+        client.close()
+        continue
+    # process data, converts bytes to string.
+    text = data.decode()
+    print("data:", text)
+    # Logic
+    if text == "caught":
+        ghosts_caught = True
+    elif text == "not caught":
+        ghosts_caught = False
+    elif text == "exit":
+        clients.remove(client)
+        client.close()
+        continue
 
 def shutdown_server():
     # close all connections
