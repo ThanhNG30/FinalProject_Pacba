@@ -20,5 +20,5 @@ def run(pacba_is_caught):
     # send encode message to the server
     cserver.send(data)
     if text == "exit":
-         break
+        break
 client.close()
