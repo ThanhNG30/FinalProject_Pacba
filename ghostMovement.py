@@ -4,6 +4,7 @@ FINAL PROJECT
 GHOST MOVEMENT
 
 '''
+from socket import *
 import serial   # PySerial: https://pypi.python.org/pypi/pyserial
 import time     # for sleep() and time()
 import sys      # for exit()
@@ -11,8 +12,8 @@ import random   # for random distance and directtion
 # Configure serial communication.
 # Set for Create 1 baud rate.
 #ser = serial.Serial(baudrate=57600, port="COM8")  # Windows: COM port #
-#ser = serial.Serial(baudrate=57600, port="/dev/ttyUSB0")  # Linux: dev file
-ser = serial.serial_for_url("socket://127.0.0.1:7654")  # Simulator
+ser = serial.Serial(baudrate=57600, port="/dev/ttyUSB0")  # Linux: dev file
+#ser = serial.serial_for_url("socket://127.0.0.1:7654")  # Simulator
 
 # Print port open or exit.
 if ser.isOpen():
@@ -62,13 +63,15 @@ ser.write(bytearray(STORE_SONG + DETECTED_VWALL_SONG)) # store song
 DETECTED_PACBA_SONG = [ 0, 3, 73, 32, 73, 32, 73, 32]
 ser.write(bytearray(STORE_SONG + DETECTED_PACBA_SONG)) # store song
 
-#bumpers
+#boolean value
 left_bumper_pressed = False
 right_bumper_pressed = False
 both_bumpers_pressed = False
 virtual_wall_detected = False
 wall_detected = False
 dock_detected = False
+ghost_is_caught = False
+
 #sensor
 SEND_SENSOR = [149, 3, 7, 13, 17]
 IR_PACKET = [242, 250, 246, 254]
@@ -146,6 +149,10 @@ while True:
         ser.write(bytearray(PLAY_SONG + [0]))
         ser.write(bytearray([137, 0, 250, 255, 255]))
         time.sleep(1)
+        ghost_is_caught = True
+        print("ghost caught", ghost_is_caught) #
+        # call client cide to signal ghost is caught
+        # server.send(ghost_caught) #NEED FIXING
         print("both or pacba")
         both_bumpers_pressed = False
         time.sleep(5)
