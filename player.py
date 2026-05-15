@@ -7,7 +7,7 @@ import sys
 import time
 
 #Our modules
-#import server
+import server
 from gui import GUI # gui
 from pacba import Pacba # class Pacba
 from scoring import Scoring
@@ -39,7 +39,8 @@ VICTORY_SCORE = 2
 score = Scoring(player)
 
 #INIT SERVER
-#server.init()
+NUM_GHOSTS = 4
+server.init_server(NUM_GHOSTS)
 
 #INIT PYGAME/GUI
 #Physical area size, just set it to 5000 for testing, units should match
@@ -48,9 +49,11 @@ PLAY_AREA_WIDTH = 5000
 PLAY_AREA_HEIGHT = 5000
 
 # Pygame screen size
-PYGAME_SCREEN_WIDTH = 100 #px
-PYGAME_SCREEN_HEIGHT = 100 #px 
-gui = GUI(PYGAME_SCREEN_WIDTH, PYGAME_SCREEN_HEIGHT, PLAY_AREA_WIDTH, PLAY_AREA_HEIGHT)
+PYGAME_SCREEN_WIDTH = 500 #px
+PYGAME_SCREEN_HEIGHT = 500 #px 
+
+# Init the gui object, which initializes pygame.  
+gui = GUI(PYGAME_SCREEN_WIDTH, PYGAME_SCREEN_HEIGHT, PLAY_AREA_WIDTH, PLAY_AREA_HEIGHT, player)
 
 #CONSTANTS FOR GAME LOGIC
 game_over = False #Set to true when lost
@@ -62,8 +65,8 @@ while not game_over or game_won:
     current_tick_time = time.time()
 
     #CHECK NETWORK MODULE FOR GAME OVER
-    #server.update()
-    #game_over = server.is_game_over()
+    server.update_server()
+    game_over = server.ghosts_caught
 
     #RUN/UPDATE IR SENSOR MODULE DATA FOR VIRTUAL WALLS/ DOCK FORCE FIELDS 
     player.ir_sensors.update()
@@ -84,9 +87,7 @@ while not game_over or game_won:
     #It should update current player position and make it available as
     #x,y co-ordinates, will need info about movement from INPUT MODULE,
     #as well as current tick time
-    #x, y = position.update()
-    #position.x
-    #position.y
+    #Jessica combined this with the input/player movement.  
 
     #DETERMINE SCORING
     #Uses data from IR sensor module and co-ordinates from position module to
@@ -97,14 +98,15 @@ while not game_over or game_won:
 
     #UPDATE GUI
     #With current position and points scored, if game over display game over
-    gui.update(score.get_score())
+    gui.update(score.get_score(),game_over,game_won)
 
 #AFTER PLAY CLEANUP
 
+#shut down server
+server.shutdown_server()
+
+#shut down pygame
+gui.shutdown()
+
 #close roomba connection
 ser.close()
-
-#shut down server
-#server.shutdown()
-
-#shut down pygame?
