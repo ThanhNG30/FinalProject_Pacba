@@ -54,5 +54,5 @@ def shutdown_server():
     print("Server exited.")
     
 init_server(1)
-update server()
+update_server()
 shutdown_server()
