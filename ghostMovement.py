@@ -9,6 +9,7 @@ import serial   # PySerial: https://pypi.python.org/pypi/pyserial
 import time     # for sleep() and time()
 import sys      # for exit()
 import random   # for random distance and directtion
+import client
 # Configure serial communication.
 # Set for Create 1 baud rate.
 #ser = serial.Serial(baudrate=57600, port="COM8")  # Windows: COM port #
@@ -64,6 +65,7 @@ DETECTED_PACBA_SONG = [ 0, 3, 73, 32, 73, 32, 73, 32]
 ser.write(bytearray(STORE_SONG + DETECTED_PACBA_SONG)) # store song
 
 #boolean value
+game_over = False
 left_bumper_pressed = False
 right_bumper_pressed = False
 both_bumpers_pressed = False
@@ -119,8 +121,13 @@ turn_right_90_script = (
     WAIT_ANGLE + int_as_2bytes(90) +
     STOP
 )
-#abc
-while True:
+
+# Main program
+# Start a client -Jess
+client.connect()
+
+# -Julia
+while not game_over:
     ser.write(bytearray(SEND_SENSOR))
     data = list(ser.read(3))
     print(data)
@@ -138,38 +145,44 @@ while True:
     if virtual_wall == 1:
         virtual_wall_detected = True
 
-    if virtual_wall_detected == True:
+    if virtual_wall_detected:
         print("v.wall")
         ser.write(bytearray(PLAY_SONG + [1]))
         ser.write(bytearray(vir_wall_script))
         ser.write(bytearray(PLAY_SCRIPT))
         time.sleep(1)
         virtual_wall_detected = False
-    elif both_bumpers_pressed == True:
+    elif both_bumpers_pressed or left_bumper_pressed or right_bumper_pressed:
         ser.write(bytearray(PLAY_SONG + [0]))
         ser.write(bytearray([137, 0, 250, 255, 255]))
         time.sleep(1)
         ghost_is_caught = True
-        print("ghost caught", ghost_is_caught) #
+        print("ghost caught", ghost_is_caught) 
+
         # call client cide to signal ghost is caught
         # server.send(ghost_caught) #NEED FIXING
+        client.run(ghost_is_caught) #-Jess
+
         print("both or pacba")
         both_bumpers_pressed = False
         time.sleep(5)
         ser.write(bytearray(STOP))
-    elif left_bumper_pressed == True:
-        ser.write(bytearray(turn_right_90_script))#turn right
-        ser.write(bytearray(PLAY_SCRIPT))
-        print("right")
-        time.sleep(1)
-        left_bumper_pressed = False
-    elif right_bumper_pressed == True:
-        ser.write(bytearray(turn_left_90_script))#turn left
-        ser.write(bytearray(PLAY_SCRIPT))
-        print("left")
-        time.sleep(1)
-        right_bumper_pressed = False
-    elif virtual_wall_detected == False:
+
+    # NOT NEEDED SINCE ASSUMING EITHER BUMPER PRESSED = PACBA IS CAUGHT
+    # elif left_bumper_pressed == True:
+    #     ser.write(bytearray(turn_right_90_script))#turn right
+    #     ser.write(bytearray(PLAY_SCRIPT))
+    #     print("right")
+    #     time.sleep(1)
+    #     left_bumper_pressed = False
+    # elif right_bumper_pressed == True:
+    #     ser.write(bytearray(turn_left_90_script))#turn left
+    #     ser.write(bytearray(PLAY_SCRIPT))
+    #     print("left")
+    #     time.sleep(1)
+    #     right_bumper_pressed = False
+
+    elif not virtual_wall_detected:
         ser.write(bytearray(drive_forward))
         forward_time = random.uniform(1.0, 4.5) # decide how long roomba run
         time.sleep(forward_time)
