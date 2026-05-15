@@ -1,5 +1,4 @@
 from socket import *
-import threading
 
 # server socket
 server = socket(AF_INET, SOCK_STREAM)
@@ -8,44 +7,48 @@ port = 5150
 # bind server
 server.bind((host, port))
 server.listen(5)
-
+# List to track the connected clients
 clients = []
-ghosts_caught = False
-
-def init_server():
-    
-    print("Waiting client...")
-    while True:
+ghosts_caught = False # variable 
+# Function client connection.
+def init_server(numClients):
+    print("Waiting for client...")
+    while len(clients) < numClients:
         # Accept connection
         (client, addr) = server.accept()
         print("Client accepted from: ", addr)
+        # Store client
         clients.append(client)
-        threading.Thread(target=handle_client, args=(client,)).start()
         
+# Function update server        
 def update_server():
-    global ghosts_caughts
-    while True:
+    global ghosts_caught
+    for client in clients:
+        
+    #while True:
         # recived data 
         data = client.recv(1024)
         # check for data 
         if not data:
-            break
+            clients.remove(client)
+            client.close()
+            continue
         # process data, converts bytes to string.
         text = data.decode()
         print("data:", text)
-        # Logic 
+        # Logic
         if text == "caught":
             ghosts_caught = True
         elif text == "not caught":
             ghosts_caught = False
         elif text == "exit":
-            break
-    print("Ghosts caught:", ghosts_caught)
-    clients.remove(client)
-    client.close()
-    
+            clients.remove(client)
+            client.close()
+            continue
+
 def shutdown_server():
+    # close all connections
     for client in clients:
-    client.close()
+        client.close()
     server.close()
     print("Server exited.")
