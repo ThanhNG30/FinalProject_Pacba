@@ -79,6 +79,13 @@ class Pacba:
                 self.driving_time_start = time.time()
                 self.is_driving = True
                 self.ser.write(drive_forward)
+            else: # Pacba is in driving state
+                distance_travelled = (self.speed * (time.time() - self.driving_time_start) * 
+                                    self.FACING_DIR[self.curr_facing_dir % len(self.FACING_DIR)])
+                #self.driving_time_start = time.time()
+                # Update Pacba's current position
+                pos[self.curr_axis] += distance_travelled
+            print("Distance calculated = ", distance_travelled)
             print("Driving FORWARD")
                     
         elif (keys[K_LEFT] or keys[K_a]):
@@ -93,7 +100,8 @@ class Pacba:
             self.curr_axis = ~self.curr_axis
             self.curr_facing_dir += 1
 
-        if (not keys[K_UP] or not keys[K_w])\
+        # OR WORKS ON STIMULATOR -Jess
+        if (not keys[K_UP] and not keys[K_w])\
         and self.is_driving:
             self.is_driving = False
             self.ser.write(pacba_movement.STOP)
@@ -102,51 +110,15 @@ class Pacba:
             print("Distance calculated = ", distance_travelled)
             print("STOP")
 
-
-        # for event in events:
-        #     # # Travelling time in straight direction
-        #     # start_driving_time = time.time() #sec
-
-        #     if event.type == KEYDOWN: 
-        #         # Appended an "and not" condition to prevent forward movement 
-        #         # when a virtual wall is detected -Ryan
-        #         if (event.key == K_UP or event.key == K_w) \
-        #         and not self.ir_sensors.virtual_wall_detected():
-        #             if not self.is_driving:
-        #                 self.driving_time_start = time.time()
-        #                 self.is_driving = True
-        #                 self.ser.write(drive_forward)
-
-        #             print("Driving FORWARD")
-                    
-        #         elif event.key == K_LEFT or event.key == K_a:
-        #             print("turning LEFT")
-        #             pacba_movement.rotate_90(self.ser, self.speed, rotate_directions["LEFT"], time.time())
-        #             self.curr_axis = ~self.curr_axis
-        #             self.curr_facing_dir -= 1
-        #             break
-
-        #         elif event.key == K_RIGHT or event.key == K_d:
-        #             print("turning RIGHT")
-        #             pacba_movement.rotate_90(self.ser, self.speed, rotate_directions["RIGHT"], time.time())
-        #             self.curr_axis = ~self.curr_axis
-        #             self.curr_facing_dir += 1
-        #             break
-
-        #     elif event.type == KEYUP:
-        #         if event.key == K_UP or event.key == K_w:
-        #             self.is_driving = False
-        #             self.ser.write(pacba_movement.STOP)
-        #             distance_travelled = (self.speed * (time.time() - self.driving_time_start) * 
-        #                             self.FACING_DIR[self.curr_facing_dir % len(self.FACING_DIR)])
-        #             print("Distance calculated = ", distance_travelled)
-        #             print("STOP")
-
             # Update Pacba's current position
             pos[self.curr_axis] += distance_travelled
         
         # Update Pacba's position after all events were processed
         self.add_new_position(tuple([int(i) for i in pos]))
+
+        # Update driving_time_start for next tick, in case where the Pacba continue driving
+        if (self.is_driving):
+            self.driving_time_start = time.time()
 
 
 
