@@ -184,7 +184,7 @@ while not game_over:
 
     elif not virtual_wall_detected:
         ser.write(bytearray(drive_forward))
-        forward_time = random.uniform(1.0, 4.5) # decide how long roomba run
+        forward_time = random.uniform(1.0, 6.5) # decide how long roomba run
         time.sleep(forward_time)
         print("forward")
         choice = random.choice(["turn_45deg", "turn_135deg"]) 
