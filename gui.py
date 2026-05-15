@@ -47,9 +47,9 @@ class GUI:
         pygame.display.set_caption('Roomba Control')
 
         # Create a font for score, game over, and victory -Ryan
-        self._score_font = pygame.font.Font(size=SCORE_FONT_SIZE)
-        self._game_over_font = pygame.font.Font(size=GAME_OVER_FONT_SIZE)
-        self._victory_font = pygame.font.Font(size=VICTORY_FONT_SIZE)
+        self._score_font = pygame.font.Font(None,SCORE_FONT_SIZE)
+        self._game_over_font = pygame.font.Font(None,GAME_OVER_FONT_SIZE)
+        self._victory_font = pygame.font.Font(None,VICTORY_FONT_SIZE)
 
         # Update and display screen buffer -Ryan
         pygame.display.update()

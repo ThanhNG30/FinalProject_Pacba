@@ -4,12 +4,12 @@ FINAL PROJECT
 GHOST MOVEMENT
 
 '''
+import client
 from socket import *
 import serial   # PySerial: https://pypi.python.org/pypi/pyserial
 import time     # for sleep() and time()
 import sys      # for exit()
 import random   # for random distance and directtion
-import client
 # Configure serial communication.
 # Set for Create 1 baud rate.
 #ser = serial.Serial(baudrate=57600, port="COM8")  # Windows: COM port #
@@ -50,6 +50,9 @@ GO_STRAIGHT = [128, 0]
 CW = [255, 255]
 CCW = [0, 1]
 
+# random driving time
+forward_time = time.time()
+
 #set up play area
 WIDTH = 500
 HEIGHT = 500
@@ -65,7 +68,6 @@ DETECTED_PACBA_SONG = [ 0, 3, 73, 32, 73, 32, 73, 32]
 ser.write(bytearray(STORE_SONG + DETECTED_PACBA_SONG)) # store song
 
 #boolean value
-game_over = False
 left_bumper_pressed = False
 right_bumper_pressed = False
 both_bumpers_pressed = False
@@ -122,20 +124,19 @@ turn_right_90_script = (
     STOP
 )
 
-# Main program
-# Start a client -Jess
+# Connect to client
 client.connect()
 
-# -Julia
-while not game_over:
+# MAIN PROGRAM
+while not ghost_is_caught:
     ser.write(bytearray(SEND_SENSOR))
     data = list(ser.read(3))
     print(data)
     bumpers = data[0]
     virtual_wall = data[1]
     dock = data[2]
-    
-# check data
+ 
+    # check data
     if bumpers == 1:
         right_bumper_pressed = True
     elif bumpers == 2:
@@ -157,35 +158,31 @@ while not game_over:
         ser.write(bytearray([137, 0, 250, 255, 255]))
         time.sleep(1)
         ghost_is_caught = True
-        print("ghost caught", ghost_is_caught) 
-
-        # call client cide to signal ghost is caught
-        # server.send(ghost_caught) #NEED FIXING
-        client.run(ghost_is_caught) #-Jess
-
+        print("ghost caught", ghost_is_caught)
         print("both or pacba")
         both_bumpers_pressed = False
         time.sleep(5)
         ser.write(bytearray(STOP))
-
-    # NOT NEEDED SINCE ASSUMING EITHER BUMPER PRESSED = PACBA IS CAUGHT
-    # elif left_bumper_pressed == True:
-    #     ser.write(bytearray(turn_right_90_script))#turn right
-    #     ser.write(bytearray(PLAY_SCRIPT))
-    #     print("right")
-    #     time.sleep(1)
-    #     left_bumper_pressed = False
-    # elif right_bumper_pressed == True:
-    #     ser.write(bytearray(turn_left_90_script))#turn left
-    #     ser.write(bytearray(PLAY_SCRIPT))
-    #     print("left")
-    #     time.sleep(1)
-    #     right_bumper_pressed = False
-
+#    DONT NEEDED
+#    elif left_bumper_pressed == True:
+#        ser.write(bytearray(turn_right_90_script))#turn right
+#        ser.write(bytearray(PLAY_SCRIPT))
+#        print("right")
+#        time.sleep(1)
+#        left_bumper_pressed = False
+#    elif right_bumper_pressed == True:
+#        ser.write(bytearray(turn_left_90_script))#turn left
+#        ser.write(bytearray(PLAY_SCRIPT))
+#        print("left")
+#        time.sleep(1)
+#        right_bumper_pressed = False
     elif not virtual_wall_detected:
         ser.write(bytearray(drive_forward))
-        forward_time = random.uniform(1.0, 6.5) # decide how long roomba run
-        time.sleep(forward_time)
+        # Set new driving time after finishing driving -Jess
+        if forward_time < time.time():
+            forward_time = time.time() + random.uniform(1.0, 6.5) # decide how long roomba run
+        else: # continue driving until enough time -Jess
+            continue
         print("forward")
         choice = random.choice(["turn_45deg", "turn_135deg"]) 
         if choice == "turn_45deg": 
@@ -199,4 +196,8 @@ while not game_over:
             time.sleep(1)
             print("turn_135deg")
   
+    # Tell client whether Pacba is caught or not
+    client.run(ghost_is_caught)
+
+client.close()
 ser.close()    

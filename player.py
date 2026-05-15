@@ -17,8 +17,8 @@ from scoring import Scoring
 # Configure serial communication.
 #Set for Create 2 baud rate.
 #ser = serial.Serial(baudrate=115200, port="COMx")  # Windows: COM port #
-#ser = serial.Serial(baudrate=115200, port="/dev/ttyUSB0")  # Linux: dev file
-ser = serial.serial_for_url("socket://127.0.0.1:7654")
+ser = serial.Serial(baudrate=115200, port="/dev/ttyUSB0")  # Linux: dev file
+#ser = serial.serial_for_url("socket://127.0.0.1:7654")
 if ser.isOpen():
     print('Open: ' + ser.portstr)
 else:
@@ -39,8 +39,8 @@ VICTORY_SCORE = 2
 score = Scoring(player)
 
 #INIT SERVER
-NUM_GHOSTS = 4
-#server.init_server(NUM_GHOSTS)
+NUM_GHOSTS = 2
+server.init_server(NUM_GHOSTS)
 
 #INIT PYGAME/GUI
 #Physical area size, just set it to 5000 for testing, units should match
@@ -65,7 +65,7 @@ while not (game_over or game_won):
     current_tick_time = time.time()
 
     #CHECK NETWORK MODULE FOR GAME OVER
-    #server.update_server()
+    server.update_server()
     game_over = server.ghosts_caught
 
     #RUN/UPDATE IR SENSOR MODULE DATA FOR VIRTUAL WALLS/ DOCK FORCE FIELDS 
@@ -93,7 +93,7 @@ while not (game_over or game_won):
     #Uses data from IR sensor module and co-ordinates from position module to
     #determine if a new point has been scored
     score.update()
-    if score.get_score() > VICTORY_SCORE:
+    if score.get_score() >= VICTORY_SCORE:
         game_won = True
 
     #UPDATE GUI
@@ -109,7 +109,7 @@ while time.time() < shutdown_time:
     continue
 
 #shut down server
-#server.shutdown_server()
+server.shutdown_server()
 
 #shut down pygame
 gui.shutdown()
