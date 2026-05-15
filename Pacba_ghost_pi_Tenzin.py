@@ -2,7 +2,11 @@
 #Ghost: Randomly roams the play area and tries to hit pacba to prevent from winning
 #description: The ghost will move within a boxsize and when it encounters a state where it is outside the box,
              #it will stop and rotate counter-clockwise 90 degree and move again by updating its x and y coordinates
-             #to 0. Detects if Pacba is caught by sensing if the bumpers were pressed. 
+             #to 0. Detects if Pacba is caught by sensing if the bumpers were pressed.
+
+"""Overall classmates:Ryan, Jessica, Julia, and Arield helped solidify the Roomba's behavior as the ghost in pacba_game under the supervision of Dr. Robert Pitts"""
+"""Julia demonstrated her code for the ghost"""
+"""Ryan and Jessica contributed to Roomba's box idea"""
 
 #from pyserial package the serial module for roomba interaction with the program 
 import serial
@@ -15,7 +19,7 @@ ser = serial.Serial(baudrate=57600, port="/dev/ttyUSB1")  # Linux: dev file
 
 #Full mode
 ser.write(bytes([128, 131]))
-
+"""Dr. Pitts pointed the need to use the sleep method"""
 time.sleep(3)
 #song upon hitting the left or right bumpers
 ser.write(bytes([140, 0, 1, 60, 64]))
@@ -24,6 +28,7 @@ ser.write(bytes([140, 1, 2, 71, 32, 71, 64]))
 
 class Bots:
     #create an instance for ser interaction
+     """Ryan helped identify bugs here"""
      def __init__(self, serial_port, current_x=0, current_y=0):
         self.ser=serial_port
         self.current_x=current_x
@@ -44,11 +49,12 @@ class Bots:
         if (bits==0b00000011):
             self.ser.write(bytes([141, 1]))
             return True
-
+         "Dr.Pitts added the return false to detect the Roomba bumpers more efficiently" 
         return False
 
      def move(self):
-               
+         """Ryan and Dr.Pitts helped with the indentation error"""
+         """Dr. Pitts suggested I change the conditional operators here from !="""
          #if the roomba position for its x or y values are below the corresponding max values for the box 
          if self.current_x<=MAX_X and self.current_y<=MAX_Y:
               #drive straight until the x or y values are more than maximum value for the box coordinates
@@ -69,6 +75,7 @@ class Bots:
               self.current_x=0
               self.current_y=0
 
+"""Ryan suggested I use constants for box size"""
 #Constants for x and y box axis
 #initialized to 500mm 500 x 500, box size 2500mm^2
 MAX_X=500
@@ -77,6 +84,7 @@ MAX_Y=500
 #Instance for bumpers for ghost object
 ghost=Bots(ser)
 
+"""Arield helped with the client.connect() and client.run() for the server connection"""
 #connect to client
 client.connect()
 #needs to check the roomba movement and position all the time. 
