@@ -8,21 +8,17 @@ def connect():
     client.connect((host, port))
     print("Conected to server:")
 # Function to run the cleint loop.
-def run(text):
-    if text == "caught":
-        ghosts_caught = True
-    elif text == "not caught":
-        ghosts_caught = False
-    if text == "exit":
-        break
+def run(pacba_is_caught):
+    msg = ""
+    if pacba_is_caught:
+        msg = "caught"
+    else:
+        msg = "not caught"
             
     # convert string to bytes
-    data = text.encode()
+    data = str.encode()
     # send encode message to the server
-    client.send(data)
-    # wait for response
-    response = client.recv(1024).decode()
-    # print server response
-    print(response)
-       
+    cserver.send(data)
+    if text == "exit":
+         break
 client.close()
