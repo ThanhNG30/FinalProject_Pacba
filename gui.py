@@ -13,6 +13,8 @@ VICTORY_COLOR = (0,255,0) #RGB Green
 VICTORY_FONT_SIZE = 64
 VICTORY_MESSAGE = "VICTORY"
 PADDING = 2 #pixels to pad from edge
+PACBA_COLOR = (255,255,0) #RGB Yellow
+PACBA_RADIUS = 170 #Create 2 radius in mm
 
 class GUI:
     """Class for controlling the GUI display"""
@@ -29,8 +31,13 @@ class GUI:
         self._screen_height = screen_height
 
         #Set physical size of play area, used to scale co-ordinates to gui
+        #Maybe not needed in final implementation since we are storing ratios below
         self._phys_width = phys_width
         self._phys_height = phys_height
+
+        #Ratios for width/height
+        self._width_ratio = screen_width // phys_width
+        self._height_ratio = screen_height // phys_height
 
         # Initialize Pygame
         pygame.init()  
@@ -64,6 +71,7 @@ class GUI:
         self._screen.fill(BACKGROUND_COLOR)
 
         #DRAW ROOMBA POSITION/WALLS/ETC (possibly separate functions)
+        self.display_pacba_position()
 
         if game_over:
             self.display_game_over()
@@ -83,15 +91,24 @@ class GUI:
         """Returns screen coordinates (in pixels) from physical coordinates"""
 
         #Scale coordinates using screen and physical dimensions set in init
-        screen_x = phys_x * self._screen_width / self._phys_width
-        screen_y = phys_y * self._screen_height / self._phys_height
+        screen_x = phys_x * self._width_ratio
+        screen_y = phys_y * self._height_ratio
 
         return screen_x, screen_y
 
     def display_pacba_position(self):
-        """Displays the pacba position in the gui"""
+        """Displays the pacba position in the gui."""
+
+        #get pacbas last position and scale it for the screen size
         phys_pos = self._pacba.get_last_position()
-        screen_pos = self.get_screen_coords_from_physical_coords(self._pacba.get_last)
+        screen_pos = self.get_screen_coords_from_physical_coords(*phys_pos)
+        
+        #This is scaling off the average of the ratios for play area/screen width/height
+        pacba_size = PACBA_RADIUS * ((self._width_ratio + self._height_ratio)//2)
+
+        #Draw a yellow circle where the pacba is
+        pygame.draw.circle(self._screen,PACBA_COLOR,screen_pos,pacba_size)
+
 
     def display_game_over(self):
         """Displays a game over message"""

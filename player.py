@@ -40,7 +40,7 @@ score = Scoring(player)
 
 #INIT SERVER
 NUM_GHOSTS = 4
-server.init_server(NUM_GHOSTS)
+#server.init_server(NUM_GHOSTS)
 
 #INIT PYGAME/GUI
 #Physical area size, just set it to 5000 for testing, units should match
@@ -60,12 +60,12 @@ game_over = False #Set to true when lost
 game_won = False #Set to true when won
 game_start_time = time.time()
 #START GAME LOOP
-while not game_over or game_won:
+while not (game_over or game_won):
     #CALCULATE CURRENT TICK TIME
     current_tick_time = time.time()
 
     #CHECK NETWORK MODULE FOR GAME OVER
-    server.update_server()
+    #server.update_server()
     game_over = server.ghosts_caught
 
     #RUN/UPDATE IR SENSOR MODULE DATA FOR VIRTUAL WALLS/ DOCK FORCE FIELDS 
@@ -102,8 +102,14 @@ while not game_over or game_won:
 
 #AFTER PLAY CLEANUP
 
+#Giving 10 seconds for the victory/game over message to display before shutting down
+#It would be better to have a popup to play again
+shutdown_time = time.time() + 10 
+while time.time() < shutdown_time:
+    continue
+
 #shut down server
-server.shutdown_server()
+#server.shutdown_server()
 
 #shut down pygame
 gui.shutdown()
