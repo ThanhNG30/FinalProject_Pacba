@@ -52,3 +52,7 @@ def shutdown_server():
         client.close()
     server.close()
     print("Server exited.")
+    
+init_server(1)
+update server()
+shutdown_server()
