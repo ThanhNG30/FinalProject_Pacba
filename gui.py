@@ -23,55 +23,30 @@ class GUI:
         """Inits a GUI object, takes 4 arguments, a screen size
         and the dimensions of a physical play area both as width, height """
         
-        #Keep track of the pacba so we can get its position
+        #Keep track of the pacba so we can get its position -Ryan
         self._pacba = pacba
 
-        #Set size of display screen in pixels
-        self._screen_width = screen_width
-        self._screen_height = screen_height
-
-        #Set physical size of play area, used to scale co-ordinates to gui
-        #Maybe not needed in final implementation since we are storing ratios below
-        self._phys_width = phys_width
-        self._phys_height = phys_height
-
-        #Ratios for width/height
-        self._width_ratio = screen_width // phys_width
-        self._height_ratio = screen_height // phys_height
-
-        # Initialize Pygame
-        pygame.init()  
-
-        # Set up Pygame screen
-        self._screen = pygame.display.set_mode((self._screen_width, self._screen_height))
-        pygame.display.set_caption('Roomba Control')
-
-        # Create a font for score, game over, and victory
         #Set size of display screen in pixels -Jess
         self._screen_width = screen_width
         self._screen_height = screen_height
 
         #Set physical size of play area, used to scale co-ordinates to gui -Ryan
+        #Maybe not needed in final implementation since we are storing ratios below
         self._phys_width = phys_width
         self._phys_height = phys_height
 
+        #Ratios for width/height -Ryan
+        self._width_ratio = screen_width // phys_width
+        self._height_ratio = screen_height // phys_height
+
         # Initialize Pygame -Jess
         pygame.init()  
-
-        # Manage UI elements
-        # Reference: https://pygame-gui.readthedocs.io/en/latest/quick_start.html 
-        #self.manager = pygame.UIManger((self._screen_width, self._screen_height), theme_path="pacba_theme.json")
-
-        #self.start_btn = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)), text='Start', manager=self.manager)
 
         # Set up Pygame screen -Jess
         self._screen = pygame.display.set_mode((self._screen_width, self._screen_height))
         pygame.display.set_caption('Roomba Control')
 
-        # Create an image to display Pacba
-        self._pacba_img = pygame.image.load('pacman.jgp')
-
-        # Create a font for score -Ryan
+        # Create a font for score, game over, and victory -Ryan
         self._score_font = pygame.font.Font(size=SCORE_FONT_SIZE)
         self._game_over_font = pygame.font.Font(size=GAME_OVER_FONT_SIZE)
         self._victory_font = pygame.font.Font(size=VICTORY_FONT_SIZE)
@@ -103,7 +78,6 @@ class GUI:
         
         if game_won:
             self.display_victory()
-        self._screen.blit(self._pacba_img, (50,50))
 
         #For now this just displays the current score in the ui -Ryan
         score_text = self._score_font.render(f"Score: {score}", True, SCORE_COLOR)
@@ -134,7 +108,6 @@ class GUI:
 
         #Draw a yellow circle where the pacba is
         pygame.draw.circle(self._screen,PACBA_COLOR,screen_pos,pacba_size)
-
 
     def display_game_over(self):
         """Displays a game over message"""
